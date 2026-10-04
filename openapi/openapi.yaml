@@ -1,0 +1,100 @@
+openapi: 3.1.0
+info:
+  title: backup-service
+  version: v1
+servers:
+- url: /
+paths:
+  /api/v1/backups:
+    get:
+      operationId: listar
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BackupInfo"
+          description: OK
+      tags:
+      - backup-controller
+    post:
+      operationId: gerar
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BackupRequest"
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BackupInfo"
+          description: OK
+      tags:
+      - backup-controller
+  /api/v1/backups/{id}:
+    delete:
+      operationId: excluir
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+      tags:
+      - backup-controller
+  /api/v1/backups/{id}/download:
+    get:
+      operationId: baixar
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+          description: OK
+      tags:
+      - backup-controller
+components:
+  schemas:
+    BackupInfo:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        encrypted:
+          type: boolean
+        fileName:
+          type: string
+        id:
+          type: string
+        path:
+          type: string
+        sha256:
+          type: string
+        sizeBytes:
+          type: integer
+          format: int64
+    BackupRequest:
+      type: object
+      properties:
+        passphrase:
+          type: string
+        passphraseConfirmation:
+          type: string
