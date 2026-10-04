@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Espelha automaticamente pro GitHub todo push feito pro GitLab (remote "origin").
+# Requer um remote "github" configurado (git remote add github <url>).
+set -e
+
+remote_name="$1"
+
+if [ "$remote_name" != "origin" ]; then
+    exit 0
+fi
+
+if ! git remote get-url github >/dev/null 2>&1; then
+    exit 0
+fi
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+    if [ "$local_sha" = "0000000000000000000000000000000000000000" ]; then
+        continue
+    fi
+    echo "→ espelhando $remote_ref para o GitHub..."
+    if ! git push github "${local_sha}:${remote_ref}"; then
+        echo "aviso: falha ao espelhar $remote_ref pro GitHub (push pro GitLab segue normalmente)" >&2
+    fi
+done
+
+exit 0
