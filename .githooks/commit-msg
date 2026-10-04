@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Historicamente prefixava a mensagem de commit com "[<branch>] - <versão> - ".
+# Descontinuado (2026-08-29): branch de desenvolvimento agora é sempre "develop"
+# (sem valor informativo por commit), e versão passou a ser identificada por tags
+# Git, não por commit. Hook mantido como no-op — mensagens de commit ficam intactas.
+exit 0
